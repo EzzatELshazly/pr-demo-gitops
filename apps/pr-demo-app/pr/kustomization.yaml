@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+
+# Default image — ArgoCD ApplicationSet overrides the tag per PR
+images:
+  - name: 084702335091.dkr.ecr.us-east-1.amazonaws.com/pr-demo-registry
+    newTag: latest

@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pr-previews
+  namespace: argocd
+spec:
+  description: PR Preview Environments
+  sourceRepos:
+    - 'https://github.com/EzzatELshazly/pr-demo-gitops.git'
+  destinations:
+    - namespace: 'pr-*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace

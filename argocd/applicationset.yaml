@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pr-demo-app-previews
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - pullRequest:
+        github:
+          owner: EzzatELshazly
+          repo: pr-demo-app
+          tokenRef:
+            secretName: github-token
+            key: token
+          labels:
+            - preview
+        requeueAfterSeconds: 60
+  template:
+    metadata:
+      name: 'pr-demo-pr-{{.number}}'
+    spec:
+      project: pr-previews
+      source:
+        repoURL: 'https://github.com/EzzatELshazly/pr-demo-gitops.git'
+        targetRevision: HEAD
+        path: apps/pr-demo-app/pr
+        kustomize:
+          images:
+            - '084702335091.dkr.ecr.us-east-1.amazonaws.com/pr-demo-registry:pr-{{.number}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'pr-{{.number}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

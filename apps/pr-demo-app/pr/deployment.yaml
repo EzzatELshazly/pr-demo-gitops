@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pr-demo-app
+  labels:
+    app: pr-demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pr-demo-app
+  template:
+    metadata:
+      labels:
+        app: pr-demo-app
+    spec:
+      containers:
+        - name: pr-demo-app
+          image: 084702335091.dkr.ecr.us-east-1.amazonaws.com/pr-demo-registry:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PR_NUMBER
+              value: "0"
+            - name: MESSAGE
+              value: "Hello from PR Preview"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
